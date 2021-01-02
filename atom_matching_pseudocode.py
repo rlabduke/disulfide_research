@@ -8,7 +8,9 @@ def parseatom(line):
 
 #disulfide bonds could be stored as a list of paired res_ids
 #can look up stored CAs in their dictionary using these as keys
-ssbonds = [[res1a, res2a], [res1b, res2b], [res1c, res2c]]
+ssbonds = [[ss1res1, ss1res2],
+           [ss2res1, ss2res2],
+           [ss3res1, ss3res2]]
 
 #store CA coordinates (or whatever) as a dictionary, keyed by res_id (chain+num+icode)
 c_alphas = {}
