@@ -49,18 +49,19 @@ for line in pdbsetoffiles:
        #SSBOND *** CYS A   23    CYS A   88                          1555   1555  2.04
           
           ssbondreslists(fileline)
-          print(str(fileline[7:10].strip()) + "," + str(fileline[11:14].strip()) + "," + str(fileline[15].strip()) + "," + str(fileline[17:20].strip()) + str(fileline[21].strip()) + "," + str(fileline[25:27].strip()) + "," + str(fileline[29].strip()) + "," + str(fileline[31:34].strip()) + "," + str(fileline[35].strip()) + '\n')
-   for fileline in currentfile:
+          print(str(fileline[7:10].strip()) + "," + str(fileline[11:14].strip()) + "," + str(fileline[15].strip()) + "," + str(fileline[17:20].strip()) + str(fileline[21].strip()) + "," + str(fileline[25:27].strip()) + "," + str(fileline[29].strip()) + "," + str(fileline[31:34].strip()) + "," + str(fileline[35].strip()))
+          print("done")
+ #for fileline in currentfile:
 
         #this is where I am calculating the distances     
-        if fileline.startswith("ATOM"): 
-            res_id = parseatom(fileline)
-            if fileline[13:16] == " CA ": 
-                      for x in ssbondres1list:
-                          for y in c_alpharesidlist: 
-                              if x == y: 
-                                   for z in ssbondres2list: 
-                                       if y == z: 
-                                            distance = abs(((c_alphas.y("X")) - (c_alphas.z("X"))))
+  #      if fileline.startswith("ATOM"): 
+   #         res_id = parseatom(fileline)
+    #        if fileline[13:16] == " CA ": 
+     #                 for x in ssbondres1list:
+      #                    for y in c_alpharesidlist: 
+       #                       if x == y: 
+        #                           for z in ssbondres2list: 
+         #                              if y == z: 
+          #                                  distance = abs(((c_alphas.y("X")) - (c_alphas.z("X"))))
                          #d = ((X1-X2)**2+(Y1-Y2)**2+(Z1-Z2)**2)**0.5
 
