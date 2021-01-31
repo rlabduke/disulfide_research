@@ -49,8 +49,8 @@ for line in pdbsetoffiles:
        #SSBOND *** CYS A   23    CYS A   88                          1555   1555  2.04
           
           ssbondreslists(fileline)
-          print(str(fileline[7:10].strip()) + "," + str(fileline[11:14].strip()) + "," + str(fileline[15].strip()) + "," + str(fileline[17:20].strip()) + str(fileline[21].strip()) + "," + str(fileline[25:27].strip()) + "," + str(fileline[29].strip()) + "," + str(fileline[31:34].strip()) + "," + str(fileline[35].strip()))
-          print("done")
+          print(str(fileline[7:10].strip()) + "," + str(fileline[11:14].strip()) + "," + str(fileline[15].strip()) + "," + str(fileline[17:21].strip()) + str(fileline[22].strip()) + "," + str(fileline[25:28].strip()) + "," + str(fileline[29].strip()) + "," + str(fileline[31:35].strip()) + "," + str(fileline[36].strip()))
+       
  #for fileline in currentfile:
 
         #this is where I am calculating the distances     
