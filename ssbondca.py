@@ -59,4 +59,5 @@ for line in pdbsetoffiles:
       ssbondres2list.append(res_id2)
          # print(str(fileline[7:10].strip()) + "," + str(fileline[11:14].strip()) + "," + str(fileline[15].strip()) + "," + str(fileline[17:21].strip()) + str(fileline[22].strip()) + "," + str(fileline[25:28].strip()) + "," + str(fileline[29].strip()) + "," + str(fileline[31:35].strip()) + "," + str(fileline[36].strip()))
 
+  currentfile = filesetter(line)
   gothroughCArecords(currentfile)
