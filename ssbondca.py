@@ -28,7 +28,16 @@ def filesetter(pdbfile):
 def gothroughCArecords(currentfile): 
   for fileline in currentfile: 
     if fileline.startswith("ATOM") and fileline[12:16] == " CA ": 
-      cares_id = fileline[22].strip() + fileline[23:26].strip() + fileline[27].strip()
+      #explicit parsing of the line helps with readability and debugging
+      chainid = fileline[22]
+      resseq = fileline[23:26]
+      inscode = fileline[27]
+      ### Debug parsing ###
+      #print("|"+chainid+"|"+resseq+"|"+inscode+"|")
+      #sys.exit()
+      ### End debug ###
+      cares_id = chainid + resseq + inscode
+      #cares_id = fileline[22].strip() + fileline[23:26].strip() + fileline[27].strip()
       for element in ssbondres1list: 
         if cares_id == element: 
           for fileline1 in currentfile: 
