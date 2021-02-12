@@ -1,5 +1,6 @@
 import os, sys
 
+pdbsetoffiles = open("top2018_pdbs_with_disulfides.txt", "r")
 ssbondres1list = []
 ssbondres2list = []
 
