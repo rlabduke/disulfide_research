@@ -49,16 +49,18 @@ def gothroughCArecords(pdbfile):
               inscode = fileline[26]
               #Xcares_id = fileline1[21].strip() + fileline1[22:26].strip() + fileline1[26].strip()
               Xcares_id = chainid + resseq + inscode
-              if Xcares_id == ssbondres2list.index(element):
-                x1 = 
-                y1 = 
-                z1 = 
-                x2 = 
-                y2 = 
-                z2 = 
-                distance = ((fileline1[31:38]-fileline[31:38])**2+(fileline1[31:38]-fileline[31:38])**2 + (fileline1[31:38]-fileline[31:38])**2)**0.5
-                print(distance)
-                
+             # print(ssbondres2list)
+              if Xcares_id == ssbondres2list[ssbondres1list.index(element)]:
+                x1 = float(fileline1[30:38].strip())
+                y1 = float(fileline1[38:46].strip())
+                z1 = float(fileline1[46:54].strip())
+                x2 = float(fileline[30:38].strip())
+                y2 = float(fileline[38:46].strip())
+                z2 = float(fileline[46:54].strip())
+               
+                distance = (((x2-x1)**2) + ((y2-y1)**2) + ((z2-z1)**2))**0.5
+                print(distance, pdbfile)
+                sys.exit()
                 #add else statement
       #  elif cares_id in ssbondres2list: 
        #   for fileline2 in currentfile: 
