@@ -1,8 +1,8 @@
 import os, sys
 
 pdbsetoffiles = open("top2018_pdbs_with_disulfides.txt", "r")
-ssbondres1list = []
-ssbondres2list = []
+#ssbondres1list = []
+#ssbondres2list = []
 
 def filesetter(pdbfile): 
   pdb = pdbfile[0:4]
@@ -23,7 +23,49 @@ def filesetter(pdbfile):
   currentfile = open(filepath)
   return currentfile
 
-
+def findCAcoords(pdbfile, ssbondres1list, ssbondres2list):
+  ca_coords = {}
+  currentfile= filesetter(pdbfile)
+  for line in currentfile:
+    if line.startswith("ATOM") or line.startswith("HETATM"):
+      resname = line[17:20]
+      if resname != "CYS":
+        continue
+      atomname = line[12:16]
+      if atomname != " CA ":
+        continue
+      chainid = line[21]
+      resseq = line[22:26]
+      inscode = line[26]
+      resid = chainid + resseq + inscode
+      #print("****",resid,"****")
+      if resid in ssbondres1list or resid in ssbondres2list:
+        #print(resid)
+        x = float(line[30:38].strip())
+        y = float(line[38:46].strip())
+        z = float(line[46:54].strip())
+        ca_coords[resid] = [x,y,z]
+        #ca_coords[resid] = {"x":x,"y":y,"z":z}
+  return ca_coords
+      
+def printCAdistance(pdbid, ssbondres1list, ssbondres2list, ca_coords):
+  i = 0
+  for res1 in ssbondres1list:
+    res2 = ssbondres2list[i]
+    try:
+      ca1 = ca_coords[res1]
+    except KeyError:
+      print(pdbid.strip(), ca_coords)
+    try:
+      ca2 = ca_coords[res2]
+    except KeyError:
+      print(pdbid.strip(), res2, "\n", ca_coords)
+      sys.exit()
+    distance = (((ca1[0]-ca2[0])**2) + ((ca1[1]-ca2[1])**2) + ((ca1[2]-ca2[2])**2))**0.5
+    #print(pdbid.strip(),res1,res2,"%.3f" % distance)
+    outlist = [pdbid.strip(),res1,res2,"%.3f" % distance]
+    print(",".join(outlist))
+    i += 1
 
 def gothroughCArecords(pdbfile):
   currentfile = filesetter(pdbfile)
@@ -72,10 +114,17 @@ def gothroughCArecords(pdbfile):
 for pdbfile in pdbsetoffiles: 
   #print(line.strip(),file=sys.stderr)
   currentfile = filesetter(pdbfile)
+  ssbondres1list = []
+  ssbondres2list = []
   for fileline in currentfile: 
     if str(fileline[0:6]) == "SSBOND": #fileline.startswith("SSBOND")
        #12345678901234567890
        #SSBOND *** CYS A   23    CYS A   88                          1555   1555  2.04
+      #TODO: add a check for non-CYS residues
+      #Allow only CYS
+      #skip others and do not add those bonds to the list
+      #One time, make a list of all the different residue types involved in SSBOND records
+      # give pdbid of anything not CYS
       chainid1 = fileline[15]
       resseq1 = fileline[17:21]
       inscode1 = fileline[21]    
@@ -93,4 +142,6 @@ for pdbfile in pdbsetoffiles:
     
   #currentfile = filesetter(pdbfile)
   #currentfile.seek(0)
-  gothroughCArecords(pdbfile)
+  #gothroughCArecords(pdbfile)
+  ca_coords = findCAcoords(pdbfile, ssbondres1list, ssbondres2list)
+  printCAdistance(pdbfile, ssbondres1list, ssbondres2list, ca_coords)
