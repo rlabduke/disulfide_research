@@ -44,8 +44,12 @@ def findCAcoords(pdbfile, ssbondres1list, ssbondres2list):
         x = float(line[30:38].strip())
         y = float(line[38:46].strip())
         z = float(line[46:54].strip())
-        ca_coords[resid] = [x,y,z]
+        altloc = line[16]
+        if altloc == " ":
+          ca_coords[resid] = [x,y,z, altloc]
         #ca_coords[resid] = {"x":x,"y":y,"z":z}
+        else: 
+          ca_coords[resid]= None
   return ca_coords
       
 def printCAdistance(pdbid, ssbondres1list, ssbondres2list, ca_coords):
@@ -56,17 +60,21 @@ def printCAdistance(pdbid, ssbondres1list, ssbondres2list, ca_coords):
       ca1 = ca_coords[res1]
     except KeyError:
       print(pdbid.strip(), ca_coords)
+      continue
     try:
       ca2 = ca_coords[res2]
     except KeyError:
       print(pdbid.strip(), res2, "\n", ca_coords)
-      sys.exit()
+      continue 
+    if ca1 is None or ca2 is None: 
+      continue   
     distance = (((ca1[0]-ca2[0])**2) + ((ca1[1]-ca2[1])**2) + ((ca1[2]-ca2[2])**2))**0.5
     #print(pdbid.strip(),res1,res2,"%.3f" % distance)
-    outlist = [pdbid.strip(),res1,res2,"%.3f" % distance]
+
+    outlist = [pdbid.strip(),res1, ca1[3], res2, ca2[3],"%.3f" % distance]
     print(",".join(outlist))
     i += 1
-
+"""
 def gothroughCArecords(pdbfile):
   currentfile = filesetter(pdbfile)
   for fileline in currentfile: 
@@ -110,7 +118,7 @@ def gothroughCArecords(pdbfile):
          #     Ycares_id = fileline1[21].strip() + fileline1[22:26].strip() + fileline1[26].strip()
           #    if Ycares_id == ssbondres2list(ssbondres2list.index(cares_id)): 
            #     distance = ((fileline1[31:38]-fileline[31:38])**2+(fileline1[31:38]-fileline[31:38])**2 + (fileline1[31:38]-fileline[31:38])**2)**0.5
-
+"""
 for pdbfile in pdbsetoffiles: 
   #print(line.strip(),file=sys.stderr)
   currentfile = filesetter(pdbfile)
