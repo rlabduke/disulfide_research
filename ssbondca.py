@@ -108,6 +108,9 @@ def printCAdistance(pdbid, ssbondres1list, ssbondres2list, ca_coords):
     elif distance > 6.99 and distance <=7.99: 
       outlist = [pdbid.strip(),res1, ca1[3], res2, ca2[3],"%.3f" % distance]
       eighthinterval.append(outlist)
+    #Add another bin or two here,
+    #trying to find a bin that is almost unpopulated
+    #trying to find the cutoff of real possible lengths
     else:
       outlist = [pdbid.strip(),res1, ca1[3], res2, ca2[3],"%.3f" % distance]
       everythingelse.append(outlist)
@@ -206,22 +209,40 @@ sortedsixthinterval = sorted(sixthinterval)
 sortedseventhinterval = sorted(seventhinterval)
 sortedeighthinterval = sorted(eighthinterval)
 sortedeverythingelse = sorted(everythingelse)
+print("CA-CA dist 1")
 for i in sortedfirstinterval:
-  print(sortedfirstinterval[i])
+  print(i)
+  #print(sortedfirstinterval[i])
+print("CA-CA dist 2")
 for i in sortedsecondinterval:
-  print(sortedsecondinterval[i])
+  print(i)
+  #print(sortedsecondinterval[i])
+print("CA-CA dist 3")
 for i in sortedthirdinterval:
-  print(sortedthirdinterval[i])
+  #print(sortedthirdinterval[i])
+  print(i)
+print("CA-CA dist 4")
 for i in sortedfourthinterval:
-  print(sortedfourthinterval[i])
+  #print(sortedfourthinterval[i])
+  print(i)
+print("CA-CA dist 5")
 for i in sortedfifthinterval:
-  print(sortedfifthinterval[i])
+  #print(sortedfifthinterval[i])
+  print(i)
+print("CA-CA dist 6")
 for i in sortedsixthinterval:
-  print(sortedsixthinterval[i])
+  #print(sortedsixthinterval[i])
+  print(i)
+print("CA-CA dist 7")
 for i in sortedseventhinterval:
-  print(sortedseventhinterval[i])
+  #print(sortedseventhinterval[i])
+  print(i)
+print("CA-CA dist 8")
 for i in sortedeighthinterval:
-  print(sortedeighthinterval[i])
+  #print(sortedeighthinterval[i])
+  print(i)
+print("CA-CA dist other")
 for i in sortedeverythingelse:
-  print(sortedeverythingelse[i])
+  #print(sortedeverythingelse[i])
+  print(i)
 
