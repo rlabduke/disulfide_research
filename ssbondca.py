@@ -1,5 +1,19 @@
 import os, sys
 
+#below are the arrays for the distance intervals
+firstinterval = []
+secondinterval = []
+thirdinterval = []
+fourthinterval = []
+fifthinterval = []
+sixthinterval = []
+seventhinterval = []
+eighthinterval = []
+everythingelse = []
+
+
+
+
 pdbsetoffiles = open("top2018_pdbs_with_disulfides.txt", "r")
 #ssbondres1list = []
 #ssbondres2list = []
@@ -70,10 +84,39 @@ def printCAdistance(pdbid, ssbondres1list, ssbondres2list, ca_coords):
       continue   
     distance = (((ca1[0]-ca2[0])**2) + ((ca1[1]-ca2[1])**2) + ((ca1[2]-ca2[2])**2))**0.5
     #print(pdbid.strip(),res1,res2,"%.3f" % distance)
-
+    if distance > 0.001 and distance <= 0.99: 
+      outlist = [pdbid.strip(),res1, ca1[3], res2, ca2[3],"%.3f" % distance]
+      firstinterval.append(outlist)
+    elif distance > 0.99 and distance <= 1.99:
+      outlist = [pdbid.strip(),res1, ca1[3], res2, ca2[3],"%.3f" % distance]
+      secondinterval.append(outlist)
+    elif distance > 1.99 and distance <= 2.99: 
+      outlist = [pdbid.strip(),res1, ca1[3], res2, ca2[3],"%.3f" % distance]
+      thirdinterval.append(outlist)
+    elif distance >2.99 and distance <= 3.99:
+      outlist = [pdbid.strip(),res1, ca1[3], res2, ca2[3],"%.3f" % distance]
+      fourthinterval.append(outlist)
+    elif distance > 3.99 and distance <=4.99: 
+      outlist = [pdbid.strip(),res1, ca1[3], res2, ca2[3],"%.3f" % distance]
+      fifthinterval.append(outlist)
+    elif distance > 4.99 and distance <= 5.99: 
+      outlist = [pdbid.strip(),res1, ca1[3], res2, ca2[3],"%.3f" % distance]
+      sixthinterval.append(outlist)
+    elif distance > 5.99 and distance <= 6.99: 
+      outlist = [pdbid.strip(),res1, ca1[3], res2, ca2[3],"%.3f" % distance]
+      seventhinterval.append(outlist)
+    elif distance > 6.99 and distance <=7.99: 
+      outlist = [pdbid.strip(),res1, ca1[3], res2, ca2[3],"%.3f" % distance]
+      eighthinterval.append(outlist)
+    else:
+      outlist = [pdbid.strip(),res1, ca1[3], res2, ca2[3],"%.3f" % distance]
+      everythingelse.append(outlist)
+    i += 1
+"""
     outlist = [pdbid.strip(),res1, ca1[3], res2, ca2[3],"%.3f" % distance]
     print(",".join(outlist))
-    i += 1
+    """
+    
 """
 def gothroughCArecords(pdbfile):
   currentfile = filesetter(pdbfile)
@@ -153,3 +196,32 @@ for pdbfile in pdbsetoffiles:
   #gothroughCArecords(pdbfile)
   ca_coords = findCAcoords(pdbfile, ssbondres1list, ssbondres2list)
   printCAdistance(pdbfile, ssbondres1list, ssbondres2list, ca_coords)
+
+sortedfirstinterval = sorted(firstinterval)
+sortedsecondinterval = sorted(secondinterval)
+sortedthirdinterval = sorted(thirdinterval)
+sortedfourthinterval = sorted(fourthinterval)
+sortedfifthinterval = sorted(fifthinterval)
+sortedsixthinterval = sorted(sixthinterval)
+sortedseventhinterval = sorted(seventhinterval)
+sortedeighthinterval = sorted(eighthinterval)
+sortedeverythingelse = sorted(everythingelse)
+for i in sortedfirstinterval:
+  print(sortedfirstinterval[i])
+for i in sortedsecondinterval:
+  print(sortedsecondinterval[i])
+for i in sortedthirdinterval:
+  print(sortedthirdinterval[i])
+for i in sortedfourthinterval:
+  print(sortedfourthinterval[i])
+for i in sortedfifthinterval:
+  print(sortedfifthinterval[i])
+for i in sortedsixthinterval:
+  print(sortedsixthinterval[i])
+for i in sortedseventhinterval:
+  print(sortedseventhinterval[i])
+for i in sortedeighthinterval:
+  print(sortedeighthinterval[i])
+for i in sortedeverythingelse:
+  print(sortedeverythingelse[i])
+
