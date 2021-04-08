@@ -9,6 +9,8 @@ fifthinterval = []
 sixthinterval = []
 seventhinterval = []
 eighthinterval = []
+ninthinterval = []
+tenthinterval = []
 everythingelse = []
 
 
@@ -109,6 +111,15 @@ def printCAdistance(pdbid, ssbondres1list, ssbondres2list, ca_coords):
       outlist = [pdbid.strip(),res1, ca1[3], res2, ca2[3],"%.3f" % distance]
       eighthinterval.append(outlist)
     #Add another bin or two here,
+    elif distance > 7.99 and distance <= 8.99: 
+      outlist = [pdbid.strip(),res1, ca1[3], res2, ca2[3],"%.3f" % distance]
+      eighthinterval.append(outlist)
+    elif distance > 8.99 and distance <= 9.99: 
+      outlist = [pdbid.strip(),res1, ca1[3], res2, ca2[3],"%.3f" % distance]
+      ninthinterval.append(outlist)
+    elif distance > 9.99 and distance <= 10.99: 
+      outlist = [pdbid.strip(),res1, ca1[3], res2, ca2[3],"%.3f" % distance]
+      tenthinterval.append(outlist)
     #trying to find a bin that is almost unpopulated
     #trying to find the cutoff of real possible lengths
     else:
