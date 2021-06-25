@@ -26,4 +26,4 @@ for chain in hierarchy.chains():
     for ag in rg.atom_groups(): #alternate conformations are split into separate atom groups
       for atom in ag.atoms():
         if atom.name == " CA ":
-          print(ag.resname, rg.resseq+rg.icode, atom.name, atom.xyz)
+          print(ag.resname, rg.resseq+rg.icode, atom.name, atom.xyz, atom.id_str)
