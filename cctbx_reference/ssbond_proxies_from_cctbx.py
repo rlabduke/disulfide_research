@@ -46,9 +46,20 @@ def get_residue_identity_from_atom(atom):
   resname = ag.resname
   resseq = rg.resseq
   icode = rg.icode
+  altloc = ag.altloc
   chainid = chain.id
-  return ":".join([chainid,resname,resseq,icode])
+  return ":".join([chainid,resname,altloc,resseq,icode])
 
+def get_bfactor_from_atom(atom):
+  return atom.b
+
+def get_occupancy_from_atom(atom):
+  return atom.occ
+
+def get_atom_coordinates(atom):
+  return {"x":atom.xyz[0],
+          "y":atom.xyz[1],
+          "z":atom.xyz[2]}
 
 #accept a pdb file as a commandline argument
 path_to_pdb_file = sys.argv[1]
@@ -75,10 +86,10 @@ ssbond_proxies_asu = get_ssbond_proxies_asu(grm)
 #    print(thing)
 #  sys.exit()
 
-#bond proxies are objects that represent covalent bonds in a structure
+#bond proxies are objects that represent covalent bonds (or other) in a structure
 #For us, the useful part is bond_proxy.i_seqs, which will let us look up the atoms in each bond
 #  proxy.i_seqs = (89, 2027), for example
-#bond_proxy.i_seqs is a tuple containing two integer indices.  The indices map to a list of atoms in the hierarchy
+#bond_proxy.i_seqs is a tuple containing two integer indices.  The indices map to a list of atoms in the hierarchy.atoms()
 
 
 all_atoms = hierarchy.atoms() #a list of all atoms in the hierarchy, its indices are the proxy i_seqs
