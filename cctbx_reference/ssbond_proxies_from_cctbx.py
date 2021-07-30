@@ -63,7 +63,6 @@ def get_atom_coordinates(atom):
 
 #accept a pdb file as a commandline argument
 path_to_pdb_file = sys.argv[1]
-
 #get a high level model object from which other objects are derived
 #get a hierachy object for most of our needs
 #get a geometry restraints manager (grm for short)
