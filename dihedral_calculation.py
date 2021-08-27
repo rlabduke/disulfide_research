@@ -3,7 +3,7 @@
 from __future__ import absolute_import, division, print_function
 import sys
 import os 
-
+from libtbx.utils import Sorry
 pdbfiles = open("top2018_pdbs_with_disulfides.txt", "r")
 outputlist = []
 for line in pdbfiles: 
@@ -16,11 +16,13 @@ def create_model_mmtbx(path_to_pdb_file):
   from libtbx.utils import null_out
   pdb_inp = iotbx.pdb.input(file_name = path_to_pdb_file)
   params = mmtbx.model.manager.get_default_pdb_interpretation_params()
+  params.pdb_interpretation.allow_polymer_cross_special_position=True
   model = mmtbx.model.manager(
     model_input = pdb_inp,
     pdb_interpretation_params = params,
     build_grm   = True,
     stop_for_unknowns = False,
+    
     log         = null_out())
   return model
 
@@ -57,6 +59,8 @@ def calculate_dihedral(atom1xyz, atom2xyz, atom3xyz, atom4xyz):
   #this is expecting atom.xyx as arguments
   from scitbx.matrix import dihedral_angle
   d = dihedral_angle(sites=[atom1xyz, atom2xyz, atom3xyz, atom4xyz], deg=True)
+  if d < 0:
+    d+=360
   return d
 
 def get_residue_identity_from_atom(atom):
@@ -96,94 +100,58 @@ for element in outputlist:
   if not os.path.isfile(path_to_pdb_file):
     print("Could not find file" + path_to_pdb_file,file=sys.stderr)
     continue
+
   try: 
-   
     model = create_model_mmtbx(path_to_pdb_file)
-  
-    hierarchy = create_hierarchy_from_model(model)
-    all_atoms=hierarchy.atoms()
-    grm = model.get_restraints_manager().geometry
+  except Sorry:
+    print("Got Sorry for %s" % os.path.basename(path_to_pdb_file), file=sys.stderr)
+    continue
+  hierarchy = create_hierarchy_from_model(model)
+  all_atoms=hierarchy.atoms()
+  grm = model.get_restraints_manager().geometry
    
-    test = get_ssbond_proxies(grm)
-   
-    for proxy in test:
+  test = get_ssbond_proxies(grm)
+
+  for proxy in test:
       
-      sg1 = all_atoms[proxy.i_seqs[0]]
-      sg2 = all_atoms[proxy.i_seqs[1]]
-      ca1,cb1,n1=find_cys_atoms(sg1)
-      ca2,cb2,n2=find_cys_atoms(sg2)
-      if None in [n1,ca1,cb1,sg1]:
-        x1 = 9999
-      else:
-        x1=calculate_dihedral(n1.xyz, ca1.xyz, cb1.xyz, sg1.xyz)
+    sg1 = all_atoms[proxy.i_seqs[0]]
+    sg2 = all_atoms[proxy.i_seqs[1]]
+    ca1,cb1,n1=find_cys_atoms(sg1)
+    ca2,cb2,n2=find_cys_atoms(sg2)
+    if None in [sg1, sg2, ca1, cb1, n1, ca2, cb2, n2]:
+      continue
+
+    x1=calculate_dihedral(n1.xyz, ca1.xyz, cb1.xyz, sg1.xyz)
       
-      if None in [ca1,cb1,sg1,sg2]:
-        x2 = 9999
-      else:
-        x2=calculate_dihedral(ca1.xyz,cb1.xyz , sg1.xyz, sg2.xyz)
-      
-      if None in [cb1,sg1,sg2,cb2]:
-        x3 = 9999
-      else:
-        x3=calculate_dihedral(cb1.xyz, sg1.xyz, sg2.xyz, cb2.xyz)
+
+    x2=calculate_dihedral(ca1.xyz,cb1.xyz , sg1.xyz, sg2.xyz)
+
+    x3=calculate_dihedral(cb1.xyz, sg1.xyz, sg2.xyz, cb2.xyz)
   
-      if None in [sg1,sg2,cb2,ca2]:
-        x2prime = 9999
-      else:
-        x2prime=calculate_dihedral(sg1.xyz, sg2.xyz, cb2.xyz, ca2.xyz)
+
+    x2prime=calculate_dihedral(sg1.xyz, sg2.xyz, cb2.xyz, ca2.xyz)
       
-      if None in [sg2,cb2,ca2,n2]:
-        x1prime = 9999
-      else:
-        x1prime=calculate_dihedral(sg2.xyz, cb2.xyz, ca2.xyz, n2.xyz)
-      
-      print("%s,%s,%s,%.2f,%.2f,%.2f,%.2f,%.2f" % (element,get_residue_identity_from_atom(sg1),get_residue_identity_from_atom(sg2),x1,x2,x3,x2prime,x1prime))
+    x1prime=calculate_dihedral(sg2.xyz, cb2.xyz, ca2.xyz, n2.xyz)
+
+    ca_atom_distance = ((ca1.xyz[0] - ca2.xyz[0])**2 + (ca1.xyz[1] - ca2.xyz[1])**2 + (ca1.xyz[2] - ca2.xyz[2])**2 )**0.5
+#p = 0-120
+#m = 240-360
+#t = 120-240
+#where did the p,m, and t values come from 
+     #chi3 splits 0-180 and 180-360
+      #get list of ++-+-
+    #if x1>0 and x2>0 and x3<0 and x2prime>0 and x1prime<0:
+      #print("%s,%s,%s" % (element,get_residue_identity_from_atom(sg1),get_residue_identity_from_atom(sg2)))
+#aug20task: calculate stuff for ++-+- and see how much stuff i can calculate now that special pos error is nixed, if i get another error send it to chriss
+    if x1 > 0 and x1 < 120 and x2 > 0 and x2 < 120 and x3 > 240 and x3 < 360 and x2prime > 0 and x2prime < 120 and x1prime > 240 and x1prime <360:
+      print("%s,%s,%s, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f" % (element,get_residue_identity_from_atom(sg1),get_residue_identity_from_atom(sg2),x1,x2,x3,x2prime,x1prime, ca_atom_distance))
       #N1-CA1-CB1-SG1    (X1)
 #CA1-CB1-SG1--SG2  (X2)
 #CB1-SG1--SG2-CB2  (X3)
 #SG1--SG2-CB2-CA2  (X2')
 #SG2-CB2-CA2-N2    (X1')
-  except ImportError:
-    print("Source the phenix environment")
-    print("source ~/MolProbity/build/setpaths.sh")
-    #sys.exit(0)
-   #print("Model creation failed: " + path_to_pdb_file,file=sys.stderr)
-    continue
+
+  #print("Source the phenix environment")
+  #print("source ~/MolProbity/build/setpaths.sh")
 
 
-
-"""def get_ssbond_proxies_asu(grm):
-  #*a*s*ymmetric *u*nit bond proxies. Should find bonds between symmetry mates, etc.
-  #I don't have this quite working yet
-  from cctbx.geometry_restraints.linking_class import linking_class
-  origin_ids = linking_class()
-  specific_origin_id = origin_ids.get_origin_id('SS BOND')
-
-  pair_proxies = grm.pair_proxies()
-  return(pair_proxies.bond_proxies.asu.proxy_select(origin_id=specific_origin_id))"""
-
-
-
-
-"""
-def calculate_dihedral(atom1xyz, atom2xyz, atom3xyz, atom4xyz):
-  #this is expecting atom.xyx as arguments
-  from scitbx.matrix import dihedral_angle
-  d = dihedral_angle(sites=[atom1xyz, atom2xyz, atom3xyz, atom4xyz], deg=True)
-  return d
-"""
-"""
-"""
-"""
-x1 = calculate_dihedral(1,2,3,4)
-x2 = calculate_dihedral(1,2,3,4)
-x3 = calculate_dihedral(1,2,3,4)
-x2prime = calculate_dihedral(1,2,3,4)
-x1prime = calculate_dihedral(1,2,3,4)
-
-print(element + " " + x1)
-print(element + " " + x2)
-print(element + " " + x3)
-print(element + " " + x4)
-print(element + " " + x5)
-"""
